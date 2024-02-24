@@ -10,9 +10,15 @@ developers = [{'name':'Ricardo',
 @app.route('/dev/<int:id>/', methods=['GET','PUT','DELETE'])
 def developer(id):
     if request.method == 'GET':
-        developer = developers[id]
-        print(developer)
-        return jsonify(developer)
+        try:
+            response = developers[id]
+        except IndexError:
+            message = 'Developer id {} does not exist.'.format(id)
+            response = {'status':'error', 'message': message}
+        except Exception:
+            message = 'Unknown error. Contact API admin.'
+            response = {'status': 'error', 'message': message}
+        return jsonify(response)
     elif request.method == 'PUT':
          info = json.loads(request.data)
          developers[id] = info
